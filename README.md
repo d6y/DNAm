@@ -41,6 +41,12 @@ Notes:
 - https://www.ncbi.nlm.nih.gov/pubmed/29676998
 - Coefficients are in Supplementary dataset 2, but I've taken them from http://clockbio.com/wp-content/uploads/2018/08/coef_pheno.csv
 
+# Clues
 
+If you have a tab separated file (e.g., from the Gene Expression Omnibus), you'll need to remove extra headers and convert the tabs into commas. For example:
+
+```
+$ tail +3 GSMxxxx.txt | xsv fmt -d '\t' > GSMxxxx.csv
+```
 
 
