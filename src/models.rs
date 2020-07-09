@@ -15,8 +15,8 @@ impl Model {
         self.coefs.get("intercept")
     }
 
-    pub fn weight(&self, probe_name: &str) -> f32 {
-        match self.coefs.get(probe_name) {
+    pub fn weight(&self, probe_id: &str) -> f32 {
+        match self.coefs.get(probe_id) {
             None => 0.0,
             Some(&v) => v,
         }
@@ -26,17 +26,24 @@ impl Model {
         (self.adjust)(age)
     }
 
-    fn horvath() -> Result<Model, AppErr> {
+    //
+    // Models
+    //
+
+    pub fn horvath() -> Result<Model, AppErr> {
         load_coefficients(HORVATH).map(|bytes| Model {
-            name: String::from("Horvath"),
+            name: String::from("Horvath Clock"),
             coefs: bytes,
-            adjust: |m| m.exp() * 21.0 - 1.0,
+            adjust: |x| match x < 0.0 {
+                true => 21.0 * x.exp() - 1.0,
+                false => 21.0 * x + 21.0,
+            },
         })
     }
 
-    fn pheno() -> Result<Model, AppErr> {
+    pub fn pheno() -> Result<Model, AppErr> {
         load_coefficients(PHENO).map(|bytes| Model {
-            name: String::from("Phenotype"),
+            name: String::from("DNAm PhenoAge"),
             coefs: bytes,
             adjust: std::convert::identity,
         })
@@ -55,6 +62,7 @@ fn load_coefficients(source: &[u8]) -> Result<HashMap<String, f32>, AppErr> {
     for result in rdr.records() {
         let record = result?;
         let key = record[0].to_owned();
+        assert!(cs.contains_key(&key) == false);
         let value = record[1].parse()?;
         cs.insert(key, value);
     }
