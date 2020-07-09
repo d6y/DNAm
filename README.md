@@ -31,8 +31,6 @@ Notes:
 
 # Sources
 
-The coefficients files are from https://clockbio.com/epigenetic-clock-calculator/
-
 ## Horvath
 
 - https://www.ncbi.nlm.nih.gov/pubmed/30048243
